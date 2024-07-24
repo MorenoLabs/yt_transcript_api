@@ -73,8 +73,9 @@ async def root(video_id: str):
 @app.get("/check-token")
 async def check_token():
     if AIRTABLE_API_KEY:
-        # records = table.all()
-        return {"message": {AIRTABLE_API_KEY}}
+        table = Table(AIRTABLE_API_KEY, BASE_ID, TABLE_NAME)
+        records = table.all()
+        return {"message": {records}}
     else:
         raise HTTPException(status_code=500, detail="Airtable token is not available")
 

@@ -29,7 +29,8 @@ class TranscribeRequest(BaseModel):
 def check_record_exists(api_key: str) -> bool:
     try:
         # Use filterByFormula to fetch records that match the API key and are active
-        formula = f"AND(Active, {{x-api-key}} = '{api_key}')"
+        formula = f"AND({{Active}} = TRUE(), {{x-api-key}} = '{api_key}')"
+
         matching_records = table.all(formula=formula)
         
         logging.debug(f"Number of matching records: {len(matching_records)}")

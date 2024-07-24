@@ -6,6 +6,7 @@ import logging
 from pyairtable import Api
 import os
 from dotenv import load_dotenv
+import requests
 
 app = FastAPI()
 # Load environment variables from .env file
@@ -18,6 +19,13 @@ AIRTABLE_TABLE_ID = os.getenv('AIRTABLE_TABLE_ID')
 
 api = Api(AIRTABLE_TOKEN)
 table = api.table(AIRTABLE_APP_ID, AIRTABLE_TABLE_ID)
+all_records = table.all()
+for record in all_records:
+    #check if api_key exists
+    if record['fields'].get('api_test'):
+        true_record = record
+    else:
+        true_record = "nix"
 
 class TranscribeRequest(BaseModel):
     video_url: str
@@ -51,7 +59,7 @@ async def read_root():
 @app.post("/transcribe")
 async def get_videoid(request: TranscribeRequest):
     if not check_record_exists(request):
-        raise HTTPException(status_code=403, detail=f"Invalid API Key: {request.api_key}")
+        raise HTTPException(status_code=403, detail=f"Invalid API Key: {all_records}{true_record}")
     
     video_id = request.video_url.split("v=")[1]
     return await root(video_id)

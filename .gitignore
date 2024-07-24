@@ -1,0 +1,22 @@
+# Python venv
+.venv/
+
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Environment variables
+.env
+
+# IDE files
+.vscode/
+.idea/
+
+# Dependency directories
+venv/
+node_modules/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/

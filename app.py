@@ -8,6 +8,7 @@ import os
 # from dotenv import load_dotenv
 
 app = FastAPI()
+api = Api(os.environ['AIRTABLE_TOKEN'])
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -17,12 +18,11 @@ class TranscribeRequest(BaseModel):
     api_key: str
 
 def check_record_exists(api_key: str) -> bool:
-    AIRTABLE_TOKEN = os.getenv('AIRTABLE_TOKEN')
     AIRTABLE_APP_ID = os.getenv('AIRTABLE_APP_ID')
     AIRTABLE_TABLE_ID = os.getenv('AIRTABLE_TABLE_ID')
     try:
         # Use filterByFormula to fetch records that match the API key and are active
-        table = Table(AIRTABLE_TOKEN, AIRTABLE_APP_ID, AIRTABLE_TABLE_ID)
+        table = api.table(AIRTABLE_APP_ID, AIRTABLE_TABLE_ID)
         formula = f"AND({{Active}} = TRUE(), {{x-api-key}} = '{api_key}')"
 
         matching_records = table.all(formula=formula)
@@ -59,45 +59,3 @@ async def root(video_id: str):
     text_formatted = formatter.format_transcript(transcript)
     return {"transcript": text_formatted}
 
-
-@app.get("/fetch-records")
-async def fetch_records():
-    # Access the environment variables within the function
-    AIRTABLE_TOKEN = os.getenv('AIRTABLE_TOKEN')
-    AIRTABLE_APP_ID = os.getenv('AIRTABLE_APP_ID')
-    AIRTABLE_TABLE_ID = os.getenv('AIRTABLE_TABLE_ID')
-    print(AIRTABLE_TOKEN)
-    print(AIRTABLE_APP_ID)
-    print(AIRTABLE_TABLE_ID)
-    try:
-        if AIRTABLE_TOKEN and AIRTABLE_APP_ID and AIRTABLE_TABLE_ID:
-            logging.debug(AIRTABLE_TOKEN)
-            table = Table(AIRTABLE_TOKEN, AIRTABLE_APP_ID, AIRTABLE_TABLE_ID)
-            records = table.all()
-            logging.debug(f"Number of records fetched: {len(records)}")
-            return {
-                "message": "Records fetched successfully",
-                "records": records,
-                "api_key": AIRTABLE_TOKEN,
-                "base_id": AIRTABLE_APP_ID,
-                "table_name": AIRTABLE_TABLE_ID
-            }
-        else:
-            raise HTTPException(status_code=500, detail="Airtable configuration is not available")
-    except Exception as e:
-        logging.error(f"An error occurred while fetching records: {e}")
-        raise HTTPException(status_code=500, detail="Failed to fetch records from Airtable")
-    
-@app.get("/test")
-async def test():
-    AIRTABLE_TOKEN = os.getenv('AIRTABLE_TOKEN')
-    AIRTABLE_APP_ID = os.getenv('AIRTABLE_APP_ID')
-    AIRTABLE_TABLE_ID = os.getenv('AIRTABLE_TABLE_ID')
-    try:
-        if AIRTABLE_TOKEN and AIRTABLE_APP_ID and AIRTABLE_TABLE_ID:
-            table = Table(AIRTABLE_TOKEN, AIRTABLE_APP_ID, AIRTABLE_TABLE_ID)
-            records = table.all()
-            return records
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Airtable configuration is not available")
-    

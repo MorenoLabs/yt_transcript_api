@@ -1,55 +1,44 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.formatters import TextFormatter
 import logging
-from pyairtable import Api
+from pyairtable import Table
 import os
 from dotenv import load_dotenv
-import requests
 
 app = FastAPI()
 # Load environment variables from .env file
 load_dotenv()
 
 # Access the environment variables
-AIRTABLE_TOKEN = os.getenv('AIRTABLE_TOKEN')
-AIRTABLE_APP_ID = os.getenv('AIRTABLE_APP_ID')
-AIRTABLE_TABLE_ID = os.getenv('AIRTABLE_TABLE_ID')
+AIRTABLE_API_KEY = os.getenv('AIRTABLE_TOKEN')
+BASE_ID = os.getenv('AIRTABLE_APP_ID')
+TABLE_NAME = os.getenv('AIRTABLE_TABLE_ID')
 
-api = Api(AIRTABLE_TOKEN)
-table = api.table(AIRTABLE_APP_ID, AIRTABLE_TABLE_ID)
-all_records = table.all()
-for record in all_records:
-    #check if api_key exists
-    if record['fields'].get('api_test'):
-        true_record = record
-    else:
-        true_record = "nix"
+# Initialize the Airtable table
+table = Table(AIRTABLE_API_KEY, BASE_ID, TABLE_NAME)
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 class TranscribeRequest(BaseModel):
     video_url: str
     api_key: str
 
-def check_record_exists(request: TranscribeRequest):
+def check_record_exists(api_key: str) -> bool:
     try:
-        # Fetch all records from the table
-        api_key = request.api_key.strip()
-        logging.alert(f"API Key: {api_key}")
-        all_records = table.all()
+        # Use filterByFormula to fetch records that match the API key and are active
+        formula = f"AND(Active, {{x-api-key}} = '{api_key}')"
+        matching_records = table.all(formula=formula)
         
-        # Check if at least one record meets the criteria
-        for record in all_records:
-            if record['fields'].get('Active') and record['fields'].get('api_test') == api_key:
-                print(f"Record found: {record}")
-                print(f"API Key: {record['fields'].get('x-api-key')}")
-                print(f"Active: {record['fields'].get('Active')}")
-                print(f"Request API Key: {request.api_key}")
-                return True
-        return False
+        logging.debug(f"Number of matching records: {len(matching_records)}")
+
+        # Return True if there is at least one matching record
+        return len(matching_records) > 0
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"An error occurred: {e}")
         return False
 
 @app.get("/")
@@ -58,8 +47,11 @@ async def read_root():
 
 @app.post("/transcribe")
 async def get_videoid(request: TranscribeRequest):
-    if not check_record_exists(request):
-        raise HTTPException(status_code=403, detail=f"Invalid API Key: {all_records}{true_record}")
+    api_key = request.api_key.strip()
+    logging.debug(f"Received API Key: '{api_key}'")
+    
+    if not check_record_exists(api_key):
+        raise HTTPException(status_code=403, detail="Invalid API Key Airtable")
     
     video_id = request.video_url.split("v=")[1]
     return await root(video_id)

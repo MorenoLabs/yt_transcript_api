@@ -9,9 +9,9 @@ app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
 
 # Access the environment variables
-AIRTABLE_API_KEY = os.getenv('AIRTABLE_API_KEY')
-BASE_ID = os.getenv('AIRTABLE_BASE_ID')
-TABLE_NAME = os.getenv('AIRTABLE_TABLE_NAME')
+AIRTABLE_TOKEN = os.getenv('AIRTABLE_TOKEN')
+AIRTABLE_APP_ID = os.getenv('AIRTABLE_APP_ID')
+AIRTABLE_TABLE_ID = os.getenv('AIRTABLE_TABLE_ID')
 
 @app.get("/")
 async def read_root():
@@ -20,8 +20,8 @@ async def read_root():
 @app.get("/fetch-records")
 async def fetch_records():
     try:
-        if AIRTABLE_API_KEY and BASE_ID and TABLE_NAME:
-            table = Table(AIRTABLE_API_KEY, BASE_ID, TABLE_NAME)
+        if AIRTABLE_TOKEN and AIRTABLE_APP_ID and AIRTABLE_TABLE_ID:
+            table = Table(AIRTABLE_TOKEN, AIRTABLE_APP_ID, AIRTABLE_TABLE_ID)
             records = table.all()
             logging.debug(f"Number of records fetched: {len(records)}")
             return {"message": "Records fetched successfully", "records": records}

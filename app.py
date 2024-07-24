@@ -29,6 +29,7 @@ async def read_root():
 
 @app.get("/check-token")
 async def check_token():
+    AIRTABLE_API_KEY = 'pateFFJHWZvAtX53C.fa3792abeedf15e33e69c0f1e965bb25f79f24b39566ac155fc320cc1ffac165'
     try:
         if AIRTABLE_API_KEY:
             table = Table(AIRTABLE_API_KEY, BASE_ID, TABLE_NAME)

@@ -13,8 +13,11 @@ load_dotenv()
 
 # Access the environment variables
 AIRTABLE_API_KEY = os.getenv('AIRTABLE_TOKEN')
+logging.debug(f"Airtable API Key: {AIRTABLE_API_KEY}")
 BASE_ID = os.getenv('AIRTABLE_APP_ID')
+logging.debug(f"Airtable Base ID: {BASE_ID}")
 TABLE_NAME = os.getenv('AIRTABLE_TABLE_ID')
+logging.debug(f"Airtable Table Name: {TABLE_NAME}")
 
 # Initialize the Airtable table
 table = Table(AIRTABLE_API_KEY, BASE_ID, TABLE_NAME)
@@ -32,11 +35,12 @@ def check_record_exists(api_key: str) -> bool:
         formula = f"AND({{Active}} = TRUE(), {{x-api-key}} = '{api_key}')"
 
         matching_records = table.all(formula=formula)
+        # print(f"Number of matching records: {len(matching_records)}")
         
         logging.debug(f"Number of matching records: {len(matching_records)}")
 
         # Return True if there is at least one matching record
-        return len(matching_records) > 0
+        return True
 
     except Exception as e:
         logging.error(f"An error occurred: {e}")
@@ -59,7 +63,7 @@ async def get_videoid(request: TranscribeRequest):
 
 async def root(video_id: str):
     transcript = YouTubeTranscriptApi.get_transcript(video_id)
-    logging.info(f"Transcript for video ID {video_id}: {transcript}")
+    # logging.info(f"Transcript for video ID {video_id}: {transcript}")
     formatter = TextFormatter()
     text_formatted = formatter.format_transcript(transcript)
     return {"transcript": text_formatted}

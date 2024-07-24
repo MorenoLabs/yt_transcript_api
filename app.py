@@ -27,6 +27,7 @@ def check_record_exists(request: TranscribeRequest):
     try:
         # Fetch all records from the table
         api_key = request.api_key.strip()
+        logging.info(f"API Key: {api_key}")
         all_records = table.all()
         
         # Check if at least one record meets the criteria

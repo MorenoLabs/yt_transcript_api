@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Header, Request
+from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.formatters import TextFormatter
@@ -12,6 +12,10 @@ class TranscribeRequest(BaseModel):
 def verify_api_key(request: TranscribeRequest):
     if request.api_key != "test":  # Replace with your actual API key
         raise HTTPException(status_code=403, detail="Invalid API Key")
+
+@app.get("/")
+async def read_root():
+    return {"message": "FastAPI is running"}
 
 @app.post("/transcribe")
 async def get_videoid(request: TranscribeRequest, verified: None = Depends(verify_api_key)):

@@ -27,7 +27,7 @@ def check_record_exists(request: TranscribeRequest):
     try:
         # Fetch all records from the table
         api_key = request.api_key.strip()
-        logging.info(f"API Key: {api_key}")
+        logging.alert(f"API Key: {api_key}")
         all_records = table.all()
         
         # Check if at least one record meets the criteria
@@ -51,7 +51,7 @@ async def read_root():
 @app.post("/transcribe")
 async def get_videoid(request: TranscribeRequest):
     if not check_record_exists(request):
-        raise HTTPException(status_code=403, detail="Invalid API Key Airtable")
+        raise HTTPException(status_code=403, detail=f"Invalid API Key: {request.api_key}")
     
     video_id = request.video_url.split("v=")[1]
     return await root(video_id)

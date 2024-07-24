@@ -69,3 +69,10 @@ async def root(video_id: str):
     formatter = TextFormatter()
     text_formatted = formatter.format_transcript(transcript)
     return {"transcript": text_formatted}
+
+@app.get("/check-token")
+async def check_token():
+    if AIRTABLE_API_KEY:
+        return {"message": "Airtable token is available"}
+    else:
+        raise HTTPException(status_code=500, detail="Airtable token is not available")

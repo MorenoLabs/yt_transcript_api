@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.formatters import TextFormatter
+import logging
 
 app = FastAPI()
 
@@ -24,6 +25,7 @@ async def get_videoid(request: TranscribeRequest, verified: None = Depends(verif
 
 async def root(video_id: str):
     transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    logging.info(f"Transcript for video ID {video_id}: {transcript}")
     formatter = TextFormatter()
     text_formatted = formatter.format_transcript(transcript)
     return {"transcript": text_formatted}

@@ -3,7 +3,7 @@ import json
 
 def send_webhook():
     # Define the webhook URL
-    webhook_url = "https://hook.eu2.make.com/4pcgi755ws78ikjwlwpaxt33h76i5cik"
+    webhook_url = "https://yt-transcript-api-fwzfex4saa-lm.a.run.app/transcribe"
     
     # Define the JSON payload
     payload = {

@@ -31,6 +31,10 @@ def check_record_exists(request: TranscribeRequest):
         # Check if at least one record meets the criteria
         for record in all_records:
             if record['fields'].get('Active') and record['fields'].get('x-api-key') == request.api_key:
+                logging.info(f"Record found: {record}")
+                logging.info(f"API Key: {record['fields'].get('x-api-key')}")
+                logging.info(f"Active: {record['fields'].get('Active')}")
+                logging.info(f"Request API Key: {request.api_key}")
                 return True
         return False
 

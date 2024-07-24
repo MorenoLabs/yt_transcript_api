@@ -5,9 +5,9 @@ from youtube_transcript_api.formatters import TextFormatter
 import logging
 from pyairtable import Api
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 app = FastAPI()
 api = Api(os.environ['AIRTABLE_TOKEN'])

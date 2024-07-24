@@ -87,3 +87,15 @@ async def fetch_records():
     except Exception as e:
         logging.error(f"An error occurred while fetching records: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch records from Airtable")
+    
+@app.get("/test")
+async def test():
+    AIRTABLE_TOKEN = os.getenv('AIRTABLE_TOKEN')
+    AIRTABLE_APP_ID = os.getenv('AIRTABLE_APP_ID')
+    AIRTABLE_TABLE_ID = os.getenv('AIRTABLE_TABLE_ID')
+    return {
+                "api_key": AIRTABLE_TOKEN,
+                "base_id": AIRTABLE_APP_ID,
+                "table_name": AIRTABLE_TABLE_ID
+            }
+    

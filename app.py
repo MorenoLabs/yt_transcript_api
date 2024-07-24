@@ -5,15 +5,15 @@ from youtube_transcript_api.formatters import TextFormatter
 import logging
 from pyairtable import Table
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 app = FastAPI()
 # Load environment variables from .env file
-load_dotenv()
+# load_dotenv()
 
 # Access the environment variables
 AIRTABLE_API_KEY = os.getenv('AIRTABLE_TOKEN')
-logging.debug(f"Airtable API Key: {AIRTABLE_API_KEY}")
+logging.debug(f"TOKEN: {AIRTABLE_API_KEY }")
 BASE_ID = os.getenv('AIRTABLE_APP_ID')
 logging.debug(f"Airtable Base ID: {BASE_ID}")
 TABLE_NAME = os.getenv('AIRTABLE_TABLE_ID')
@@ -51,7 +51,9 @@ async def read_root():
     return {"message": "FastAPI is running"}
 
 @app.post("/transcribe")
+
 async def get_videoid(request: TranscribeRequest):
+    logging.debug(f"TOKEN: {AIRTABLE_API_KEY }")
     api_key = request.api_key.strip()
     logging.debug(f"Received API Key: '{api_key}'")
     

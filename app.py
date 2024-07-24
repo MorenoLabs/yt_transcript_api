@@ -93,9 +93,11 @@ async def test():
     AIRTABLE_TOKEN = os.getenv('AIRTABLE_TOKEN')
     AIRTABLE_APP_ID = os.getenv('AIRTABLE_APP_ID')
     AIRTABLE_TABLE_ID = os.getenv('AIRTABLE_TABLE_ID')
-    return {
-                "api_key": AIRTABLE_TOKEN,
-                "base_id": AIRTABLE_APP_ID,
-                "table_name": AIRTABLE_TABLE_ID
-            }
+    try:
+        if AIRTABLE_TOKEN and AIRTABLE_APP_ID and AIRTABLE_TABLE_ID:
+            table = Table(AIRTABLE_TOKEN, AIRTABLE_APP_ID, AIRTABLE_TABLE_ID)
+            records = table.all()
+            return records
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Airtable configuration is not available")
     

@@ -3,12 +3,12 @@ import json
 
 def send_webhook():
     # Define the webhook URL
-    webhook_url = "https://yt-transcript-api-fwzfex4saa-lm.a.run.app/transcribe"
+    webhook_url = "https://https://hook.eu2.make.com/wx5sw8683r5jieos9hnaef39ox7jsseh"
     
     # Define the JSON payload
     payload = {
         "video_url": "https://www.youtube.com/watch?v=fJwcfIYCbo8",
-        "api_key": "test"
+        "api_key": "qE7uKfYLoBxJfm"
     }
     
     # Define headers

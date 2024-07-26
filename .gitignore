@@ -20,3 +20,9 @@ node_modules/
 dist/
 build/
 *.egg-info/
+
+
+*.ipynb
+test.py
+test_local.py
+app_test.py

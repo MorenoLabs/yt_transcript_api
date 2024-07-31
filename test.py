@@ -2,10 +2,10 @@ import requests
 
 def call_external_api():
     # Call the external API
-    external_api_url = "https://yt-transcript-api1-fwzfex4saa-lm.a.run.app/transcribe"
+    external_api_url = "https://yt-transcript-api-fwzfex4saa-oe.a.run.app/transcribe"
     external_api_response = requests.post(
         external_api_url,
-        json={"video_url": "https://www.youtube.com/watch?v=H9RSeDUdkCA", "api_key": "qE7uKfYLoBxJfm"}
+        json={"video_url": "https://www.youtube.com/watch?v=H9RSeDUdkCA", "api_key": "5iqcnhqx4snag8fxswa4q7jjc0xkgc"}
     )
     
     # Check if the response is JSON

@@ -103,9 +103,8 @@ async def extract_video_stats(video_id: str):
 
 
 async def root(video_id: str):
-    transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['de', 'en'])
     video_data = await extract_video_stats(video_id)  # Await the async function
     formatter = TextFormatter()
     text_formatted = formatter.format_transcript(transcript)
     return {"transcript": text_formatted, "video_data": video_data}
-

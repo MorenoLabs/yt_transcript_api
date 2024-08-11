@@ -8,6 +8,7 @@ import os
 from dotenv import load_dotenv
 from serpapi import GoogleSearch
 import requests
+import re
 
 load_dotenv()
 
@@ -57,8 +58,18 @@ async def get_videoid(request: TranscribeRequest):
     if not check_record_exists(api_key):
         raise HTTPException(status_code=403, detail="Invalid API Key Airtable")
     
-    video_id = request.video_url.split("v=")[1]
+    # Regular expression to extract the video ID
+    video_id_pattern = re.compile(r'(?:v=|\/)([0-9A-Za-z_-]{11})(?:\?|&|$)')
+    
+    match = video_id_pattern.search(request.video_url)
+    
+    if not match:
+        raise HTTPException(status_code=400, detail="Invalid YouTube URL")
+    
+    video_id = match.group(1)
+    
     return await root(video_id)
+
 
 async def extract_video_stats(video_id: str):
 

@@ -5,7 +5,7 @@ def call_local_api():
     local_api_url = "http://127.0.0.1:8000/transcribe"
     local_api_response = requests.post(
         local_api_url,
-        json={"video_url": "https://www.youtube.com/watch?v=NS6cadJsXsA", "api_key": "5iqcnhqx4snag8fxswa4q7jjc0xkgc"}
+        json={"video_url": "https://youtu.be/5eYg1OcHm5k?si=apbWeBEEvB8z5odx", "api_key": "5iqcnhqx4snag8fxswa4q7jjc0xkgc"}
     )
     
     # Check if the response is JSON
